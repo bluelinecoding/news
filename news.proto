@@ -1,0 +1,15 @@
+syntax = "proto3";
+option go_package = "github.com/bluelinecoding/news";
+package news;
+
+message GetRequest {
+  string id = 1;
+}
+
+message GetResponse {
+  string id = 1;
+}
+
+service News {
+  rpc Get(GetRequest) returns (GetResponse) {}
+}
