@@ -3,6 +3,7 @@ module github.com/bluelinecoding/news
 go 1.13
 
 require (
+	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/go-ozzo/ozzo-validation/v4 v4.2.2
 	github.com/golang-migrate/migrate/v4 v4.12.2
 	github.com/golang/protobuf v1.4.2

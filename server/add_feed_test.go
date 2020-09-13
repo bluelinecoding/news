@@ -17,14 +17,14 @@ func TestAddFeed(t *testing.T) {
 	req := &news.AddFeedRequest{
 		Provider: "provider_1",
 		Category: "category_1",
-		Url:      "url_1",
+		Url:      "http://feeds.bbci.co.uk/news/uk/rss.xml",
 	}
 
 	res, err := cli.AddFeed(ctx, req)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 
-	feedBefore, err := db.GetFeed(ctx, "url_1")
+	feedBefore, err := db.GetFeed(ctx, "http://feeds.bbci.co.uk/news/uk/rss.xml")
 	assert.NotNil(t, feedBefore)
 }
 
@@ -35,7 +35,7 @@ func TestAddFeed_NoDuplicates(t *testing.T) {
 	req := &news.AddFeedRequest{
 		Provider: "provider_1",
 		Category: "category_1",
-		Url:      "url_1",
+		Url:      "http://feeds.bbci.co.uk/news/uk/rss.xml",
 	}
 
 	res1, err := cli.AddFeed(ctx, req)

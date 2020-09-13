@@ -18,14 +18,14 @@ func TestDeleteFeed(t *testing.T) {
 		ID:       "feed_1",
 		Provider: "provider_1",
 		Category: "category_1",
-		Url:      "url_1",
+		Url:      "http://feeds.bbci.co.uk/news/uk/rss.xml",
 	})
 
 	if err1 != nil {
 		t.Fatal(err1)
 	}
 
-	feedBefore, err := db.GetFeed(ctx, "url_1")
+	feedBefore, err := db.GetFeed(ctx, "http://feeds.bbci.co.uk/news/uk/rss.xml")
 
 	assert.NotNil(t, feedBefore)
 
@@ -38,7 +38,7 @@ func TestDeleteFeed(t *testing.T) {
 	assert.NotNil(t, deleteRes)
 	assert.Nil(t, err)
 
-	feedAfter, err := db.GetFeed(ctx, "url_1")
+	feedAfter, err := db.GetFeed(ctx, "http://feeds.bbci.co.uk/news/uk/rss.xml")
 
 	assert.Nil(t, feedAfter)
 }

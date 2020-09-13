@@ -1,6 +1,7 @@
 package news
 
 import (
+	"github.com/go-ozzo/ozzo-validation/is"
 	validation "github.com/go-ozzo/ozzo-validation/v4"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
@@ -11,6 +12,7 @@ func (r *AddFeedRequest) Validate() error {
 		validation.Field(&r.Provider, validation.Required),
 		validation.Field(&r.Category, validation.Required),
 		validation.Field(&r.Url, validation.Required),
+		validation.Field(&r.Url, is.URL),
 	)
 
 	if errors != nil {
