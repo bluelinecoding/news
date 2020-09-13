@@ -20,6 +20,18 @@ func (r *AddFeedRequest) Validate() error {
 	return nil
 }
 
+func (r *DeleteFeedRequest) Validate() error {
+	errors := validation.ValidateStruct(r,
+		validation.Field(&r.FeedId, validation.Required),
+	)
+
+	if errors != nil {
+		return errors.(validation.Errors)
+	}
+
+	return nil
+}
+
 func ValidationErrToPBErrors(err error) []*ValidationError {
 	var result []*ValidationError
 
