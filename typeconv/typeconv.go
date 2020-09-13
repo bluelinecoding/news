@@ -4,6 +4,7 @@ import (
 	"github.com/bluelinecoding/news"
 	"github.com/bluelinecoding/news/db"
 	"github.com/golang/protobuf/ptypes"
+	"github.com/mmcdole/gofeed"
 )
 
 func DBFeedsToPBFeeds(dbFeeds []*db.Feed) ([]*news.Feed, error) {
@@ -35,4 +36,30 @@ func DBFeedToPBFeed(dbFeed *db.Feed) (*news.Feed, error) {
 	}
 
 	return feed, nil
+}
+
+func GoFeedItemToPBArticle(item *gofeed.Item) *news.Article {
+	article := &news.Article{
+		Id:          item.GUID,
+		Title:       item.Title,
+		Description: item.Description,
+	}
+
+	if item.PublishedParsed != nil {
+		publishedTime, err := ptypes.TimestampProto(*item.PublishedParsed)
+		if err != nil {
+			// Log error that we couldn't parse?
+		}
+		article.PublishedTime = publishedTime
+	}
+
+	if item.Image != nil {
+		image := &news.Image{
+			Url: item.Image.URL,
+		}
+
+		article.Image = image
+	}
+
+	return article
 }

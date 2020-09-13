@@ -13,8 +13,9 @@ require (
 	github.com/lileio/lile/v2 v2.2.13
 	github.com/lileio/logr v1.1.0
 	github.com/lileio/pubsub/v2 v2.5.0
-	github.com/mmcdole/gofeed v1.1.0 // indirect
+	github.com/mmcdole/gofeed v1.1.0
 	github.com/opentracing/opentracing-go v1.2.0
+	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/rakyll/gotest v0.0.5 // indirect
 	github.com/segmentio/ksuid v1.0.3
 	github.com/sirupsen/logrus v1.6.0

@@ -32,6 +32,20 @@ func (r *DeleteFeedRequest) Validate() error {
 	return nil
 }
 
+func (r *ListArticlesRequest) Validate() error {
+	errors := validation.ValidateStruct(r,
+		validation.Field(&r.FeedProviders, validation.Length(1, 0)),
+		validation.Field(&r.PageIndex, validation.Min(0)),
+		validation.Field(&r.PageSize, validation.Min(0)),
+	)
+
+	if errors != nil {
+		return errors.(validation.Errors)
+	}
+
+	return nil
+}
+
 func ValidationErrToPBErrors(err error) []*ValidationError {
 	var result []*ValidationError
 

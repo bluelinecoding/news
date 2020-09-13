@@ -40,7 +40,7 @@ message SocialMedia {
 }
 
 message ListArticlesRequest {
-    int32 page_size = 1;
+    int32 page_size = 1;        // defaults to 20
     int32 page_index = 2;
     repeated string feed_providers = 3;
     repeated string feed_categories = 4;

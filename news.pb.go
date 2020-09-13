@@ -360,7 +360,7 @@ type ListArticlesRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	PageSize       int32    `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageSize       int32    `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"` // defaults to 20
 	PageIndex      int32    `protobuf:"varint,2,opt,name=page_index,json=pageIndex,proto3" json:"page_index,omitempty"`
 	FeedProviders  []string `protobuf:"bytes,3,rep,name=feed_providers,json=feedProviders,proto3" json:"feed_providers,omitempty"`
 	FeedCategories []string `protobuf:"bytes,4,rep,name=feed_categories,json=feedCategories,proto3" json:"feed_categories,omitempty"`
