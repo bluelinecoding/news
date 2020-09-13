@@ -9,6 +9,7 @@ package news
 import (
 	context "context"
 	proto "github.com/golang/protobuf/proto"
+	timestamp "github.com/golang/protobuf/ptypes/timestamp"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -29,16 +30,69 @@ const (
 // of the legacy proto package is being used.
 const _ = proto.ProtoPackageIsVersion4
 
-type GetRequest struct {
+type SocialMediaType int32
+
+const (
+	SocialMediaType_SOCIAL_MEDIA_TYPE_UNKNOWN  SocialMediaType = 0
+	SocialMediaType_SOCIAL_MEDIA_TYPE_FACEBOOK SocialMediaType = 1
+	SocialMediaType_SOCIAL_MEDIA_TYPE_TWITTER  SocialMediaType = 2 // etc...
+)
+
+// Enum value maps for SocialMediaType.
+var (
+	SocialMediaType_name = map[int32]string{
+		0: "SOCIAL_MEDIA_TYPE_UNKNOWN",
+		1: "SOCIAL_MEDIA_TYPE_FACEBOOK",
+		2: "SOCIAL_MEDIA_TYPE_TWITTER",
+	}
+	SocialMediaType_value = map[string]int32{
+		"SOCIAL_MEDIA_TYPE_UNKNOWN":  0,
+		"SOCIAL_MEDIA_TYPE_FACEBOOK": 1,
+		"SOCIAL_MEDIA_TYPE_TWITTER":  2,
+	}
+)
+
+func (x SocialMediaType) Enum() *SocialMediaType {
+	p := new(SocialMediaType)
+	*p = x
+	return p
+}
+
+func (x SocialMediaType) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SocialMediaType) Descriptor() protoreflect.EnumDescriptor {
+	return file_news_proto_enumTypes[0].Descriptor()
+}
+
+func (SocialMediaType) Type() protoreflect.EnumType {
+	return &file_news_proto_enumTypes[0]
+}
+
+func (x SocialMediaType) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SocialMediaType.Descriptor instead.
+func (SocialMediaType) EnumDescriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{0}
+}
+
+type Feed struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id         string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Provider   string               `protobuf:"bytes,2,opt,name=provider,proto3" json:"provider,omitempty"`
+	Category   string               `protobuf:"bytes,3,opt,name=category,proto3" json:"category,omitempty"`
+	Url        string               `protobuf:"bytes,4,opt,name=url,proto3" json:"url,omitempty"`
+	CreateTime *timestamp.Timestamp `protobuf:"bytes,5,opt,name=create_time,json=createTime,proto3" json:"create_time,omitempty"`
 }
 
-func (x *GetRequest) Reset() {
-	*x = GetRequest{}
+func (x *Feed) Reset() {
+	*x = Feed{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_news_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -46,13 +100,13 @@ func (x *GetRequest) Reset() {
 	}
 }
 
-func (x *GetRequest) String() string {
+func (x *Feed) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetRequest) ProtoMessage() {}
+func (*Feed) ProtoMessage() {}
 
-func (x *GetRequest) ProtoReflect() protoreflect.Message {
+func (x *Feed) ProtoReflect() protoreflect.Message {
 	mi := &file_news_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -64,28 +118,62 @@ func (x *GetRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetRequest.ProtoReflect.Descriptor instead.
-func (*GetRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use Feed.ProtoReflect.Descriptor instead.
+func (*Feed) Descriptor() ([]byte, []int) {
 	return file_news_proto_rawDescGZIP(), []int{0}
 }
 
-func (x *GetRequest) GetId() string {
+func (x *Feed) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
-type GetResponse struct {
+func (x *Feed) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *Feed) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *Feed) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+func (x *Feed) GetCreateTime() *timestamp.Timestamp {
+	if x != nil {
+		return x.CreateTime
+	}
+	return nil
+}
+
+type Article struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Id string `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Id            string               `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title         string               `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string               `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Link          string               `protobuf:"bytes,4,opt,name=link,proto3" json:"link,omitempty"`
+	Image         *Image               `protobuf:"bytes,5,opt,name=image,proto3" json:"image,omitempty"`
+	PublishedTime *timestamp.Timestamp `protobuf:"bytes,6,opt,name=published_time,json=publishedTime,proto3" json:"published_time,omitempty"`
+	SocialMedia   []SocialMediaType    `protobuf:"varint,7,rep,packed,name=social_media,json=socialMedia,proto3,enum=news.SocialMediaType" json:"social_media,omitempty"`
 }
 
-func (x *GetResponse) Reset() {
-	*x = GetResponse{}
+func (x *Article) Reset() {
+	*x = Article{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_news_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -93,13 +181,13 @@ func (x *GetResponse) Reset() {
 	}
 }
 
-func (x *GetResponse) String() string {
+func (x *Article) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetResponse) ProtoMessage() {}
+func (*Article) ProtoMessage() {}
 
-func (x *GetResponse) ProtoReflect() protoreflect.Message {
+func (x *Article) ProtoReflect() protoreflect.Message {
 	mi := &file_news_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -111,32 +199,767 @@ func (x *GetResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetResponse.ProtoReflect.Descriptor instead.
-func (*GetResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use Article.ProtoReflect.Descriptor instead.
+func (*Article) Descriptor() ([]byte, []int) {
 	return file_news_proto_rawDescGZIP(), []int{1}
 }
 
-func (x *GetResponse) GetId() string {
+func (x *Article) GetId() string {
 	if x != nil {
 		return x.Id
 	}
 	return ""
 }
 
+func (x *Article) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *Article) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *Article) GetLink() string {
+	if x != nil {
+		return x.Link
+	}
+	return ""
+}
+
+func (x *Article) GetImage() *Image {
+	if x != nil {
+		return x.Image
+	}
+	return nil
+}
+
+func (x *Article) GetPublishedTime() *timestamp.Timestamp {
+	if x != nil {
+		return x.PublishedTime
+	}
+	return nil
+}
+
+func (x *Article) GetSocialMedia() []SocialMediaType {
+	if x != nil {
+		return x.SocialMedia
+	}
+	return nil
+}
+
+type Image struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Url string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+}
+
+func (x *Image) Reset() {
+	*x = Image{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *Image) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Image) ProtoMessage() {}
+
+func (x *Image) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Image.ProtoReflect.Descriptor instead.
+func (*Image) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Image) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+type SocialMedia struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Type string `protobuf:"bytes,1,opt,name=type,proto3" json:"type,omitempty"`
+	Url  string `protobuf:"bytes,2,opt,name=url,proto3" json:"url,omitempty"`
+}
+
+func (x *SocialMedia) Reset() {
+	*x = SocialMedia{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SocialMedia) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SocialMedia) ProtoMessage() {}
+
+func (x *SocialMedia) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SocialMedia.ProtoReflect.Descriptor instead.
+func (*SocialMedia) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SocialMedia) GetType() string {
+	if x != nil {
+		return x.Type
+	}
+	return ""
+}
+
+func (x *SocialMedia) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+type ListArticlesRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	PageSize       int32    `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageIndex      int32    `protobuf:"varint,2,opt,name=page_index,json=pageIndex,proto3" json:"page_index,omitempty"`
+	FeedProviders  []string `protobuf:"bytes,3,rep,name=feed_providers,json=feedProviders,proto3" json:"feed_providers,omitempty"`
+	FeedCategories []string `protobuf:"bytes,4,rep,name=feed_categories,json=feedCategories,proto3" json:"feed_categories,omitempty"`
+}
+
+func (x *ListArticlesRequest) Reset() {
+	*x = ListArticlesRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListArticlesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListArticlesRequest) ProtoMessage() {}
+
+func (x *ListArticlesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListArticlesRequest.ProtoReflect.Descriptor instead.
+func (*ListArticlesRequest) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *ListArticlesRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListArticlesRequest) GetPageIndex() int32 {
+	if x != nil {
+		return x.PageIndex
+	}
+	return 0
+}
+
+func (x *ListArticlesRequest) GetFeedProviders() []string {
+	if x != nil {
+		return x.FeedProviders
+	}
+	return nil
+}
+
+func (x *ListArticlesRequest) GetFeedCategories() []string {
+	if x != nil {
+		return x.FeedCategories
+	}
+	return nil
+}
+
+type ListArticlesResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Articles []*Article `protobuf:"bytes,1,rep,name=articles,proto3" json:"articles,omitempty"`
+}
+
+func (x *ListArticlesResponse) Reset() {
+	*x = ListArticlesResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[5]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListArticlesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListArticlesResponse) ProtoMessage() {}
+
+func (x *ListArticlesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[5]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListArticlesResponse.ProtoReflect.Descriptor instead.
+func (*ListArticlesResponse) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *ListArticlesResponse) GetArticles() []*Article {
+	if x != nil {
+		return x.Articles
+	}
+	return nil
+}
+
+type AddFeedRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Provider string `protobuf:"bytes,1,opt,name=provider,proto3" json:"provider,omitempty"`
+	Category string `protobuf:"bytes,2,opt,name=category,proto3" json:"category,omitempty"`
+	Url      string `protobuf:"bytes,3,opt,name=url,proto3" json:"url,omitempty"`
+}
+
+func (x *AddFeedRequest) Reset() {
+	*x = AddFeedRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddFeedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFeedRequest) ProtoMessage() {}
+
+func (x *AddFeedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFeedRequest.ProtoReflect.Descriptor instead.
+func (*AddFeedRequest) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *AddFeedRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *AddFeedRequest) GetCategory() string {
+	if x != nil {
+		return x.Category
+	}
+	return ""
+}
+
+func (x *AddFeedRequest) GetUrl() string {
+	if x != nil {
+		return x.Url
+	}
+	return ""
+}
+
+type AddFeedResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Feed *Feed `protobuf:"bytes,1,opt,name=feed,proto3" json:"feed,omitempty"`
+}
+
+func (x *AddFeedResponse) Reset() {
+	*x = AddFeedResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[7]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *AddFeedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AddFeedResponse) ProtoMessage() {}
+
+func (x *AddFeedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[7]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AddFeedResponse.ProtoReflect.Descriptor instead.
+func (*AddFeedResponse) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *AddFeedResponse) GetFeed() *Feed {
+	if x != nil {
+		return x.Feed
+	}
+	return nil
+}
+
+type ListFeedsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *ListFeedsRequest) Reset() {
+	*x = ListFeedsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[8]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListFeedsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFeedsRequest) ProtoMessage() {}
+
+func (x *ListFeedsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[8]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFeedsRequest.ProtoReflect.Descriptor instead.
+func (*ListFeedsRequest) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{8}
+}
+
+type ListFeedsResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Feeds []*Feed `protobuf:"bytes,1,rep,name=feeds,proto3" json:"feeds,omitempty"`
+}
+
+func (x *ListFeedsResponse) Reset() {
+	*x = ListFeedsResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[9]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListFeedsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListFeedsResponse) ProtoMessage() {}
+
+func (x *ListFeedsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[9]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListFeedsResponse.ProtoReflect.Descriptor instead.
+func (*ListFeedsResponse) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *ListFeedsResponse) GetFeeds() []*Feed {
+	if x != nil {
+		return x.Feeds
+	}
+	return nil
+}
+
+type DeleteFeedRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	FeedId string `protobuf:"bytes,1,opt,name=feed_id,json=feedId,proto3" json:"feed_id,omitempty"`
+}
+
+func (x *DeleteFeedRequest) Reset() {
+	*x = DeleteFeedRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFeedRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFeedRequest) ProtoMessage() {}
+
+func (x *DeleteFeedRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFeedRequest.ProtoReflect.Descriptor instead.
+func (*DeleteFeedRequest) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteFeedRequest) GetFeedId() string {
+	if x != nil {
+		return x.FeedId
+	}
+	return ""
+}
+
+type DeleteFeedResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *DeleteFeedResponse) Reset() {
+	*x = DeleteFeedResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[11]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *DeleteFeedResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteFeedResponse) ProtoMessage() {}
+
+func (x *DeleteFeedResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[11]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteFeedResponse.ProtoReflect.Descriptor instead.
+func (*DeleteFeedResponse) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{11}
+}
+
+type ValidationError struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Field   string `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	Message string `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+}
+
+func (x *ValidationError) Reset() {
+	*x = ValidationError{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[12]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ValidationError) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidationError) ProtoMessage() {}
+
+func (x *ValidationError) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[12]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidationError.ProtoReflect.Descriptor instead.
+func (*ValidationError) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *ValidationError) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *ValidationError) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type ValidationErrors struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Errors []*ValidationError `protobuf:"bytes,1,rep,name=errors,proto3" json:"errors,omitempty"`
+}
+
+func (x *ValidationErrors) Reset() {
+	*x = ValidationErrors{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_news_proto_msgTypes[13]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ValidationErrors) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ValidationErrors) ProtoMessage() {}
+
+func (x *ValidationErrors) ProtoReflect() protoreflect.Message {
+	mi := &file_news_proto_msgTypes[13]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ValidationErrors.ProtoReflect.Descriptor instead.
+func (*ValidationErrors) Descriptor() ([]byte, []int) {
+	return file_news_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ValidationErrors) GetErrors() []*ValidationError {
+	if x != nil {
+		return x.Errors
+	}
+	return nil
+}
+
 var File_news_proto protoreflect.FileDescriptor
 
 var file_news_proto_rawDesc = []byte{
 	0x0a, 0x0a, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x04, 0x6e, 0x65,
-	0x77, 0x73, 0x22, 0x1c, 0x0a, 0x0a, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64,
-	0x22, 0x1d, 0x0a, 0x0b, 0x47, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
-	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x32,
-	0x34, 0x0a, 0x04, 0x4e, 0x65, 0x77, 0x73, 0x12, 0x2c, 0x0a, 0x03, 0x47, 0x65, 0x74, 0x12, 0x10,
-	0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74,
-	0x1a, 0x11, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x47, 0x65, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f,
-	0x6e, 0x73, 0x65, 0x22, 0x00, 0x42, 0x20, 0x5a, 0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e,
-	0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x6c, 0x75, 0x65, 0x6c, 0x69, 0x6e, 0x65, 0x63, 0x6f, 0x64, 0x69,
-	0x6e, 0x67, 0x2f, 0x6e, 0x65, 0x77, 0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x77, 0x73, 0x1a, 0x1f, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2f, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x62, 0x75, 0x66, 0x2f, 0x74, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x2e, 0x70, 0x72,
+	0x6f, 0x74, 0x6f, 0x22, 0x9d, 0x01, 0x0a, 0x04, 0x46, 0x65, 0x65, 0x64, 0x12, 0x0e, 0x0a, 0x02,
+	0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12, 0x1a, 0x0a, 0x08,
+	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12, 0x1a, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65,
+	0x67, 0x6f, 0x72, 0x79, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65,
+	0x67, 0x6f, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x04, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x12, 0x3b, 0x0a, 0x0b, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65,
+	0x5f, 0x74, 0x69, 0x6d, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f,
+	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69,
+	0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70, 0x52, 0x0a, 0x63, 0x72, 0x65, 0x61, 0x74, 0x65, 0x54,
+	0x69, 0x6d, 0x65, 0x22, 0x85, 0x02, 0x0a, 0x07, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x12,
+	0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x02, 0x69, 0x64, 0x12,
+	0x14, 0x0a, 0x05, 0x74, 0x69, 0x74, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x05,
+	0x74, 0x69, 0x74, 0x6c, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70,
+	0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64, 0x65, 0x73, 0x63,
+	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x12, 0x0a, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x18,
+	0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6c, 0x69, 0x6e, 0x6b, 0x12, 0x21, 0x0a, 0x05, 0x69,
+	0x6d, 0x61, 0x67, 0x65, 0x18, 0x05, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x6e, 0x65, 0x77,
+	0x73, 0x2e, 0x49, 0x6d, 0x61, 0x67, 0x65, 0x52, 0x05, 0x69, 0x6d, 0x61, 0x67, 0x65, 0x12, 0x41,
+	0x0a, 0x0e, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x65, 0x64, 0x5f, 0x74, 0x69, 0x6d, 0x65,
+	0x18, 0x06, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61,
+	0x6d, 0x70, 0x52, 0x0d, 0x70, 0x75, 0x62, 0x6c, 0x69, 0x73, 0x68, 0x65, 0x64, 0x54, 0x69, 0x6d,
+	0x65, 0x12, 0x38, 0x0a, 0x0c, 0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x5f, 0x6d, 0x65, 0x64, 0x69,
+	0x61, 0x18, 0x07, 0x20, 0x03, 0x28, 0x0e, 0x32, 0x15, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x53,
+	0x6f, 0x63, 0x69, 0x61, 0x6c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x54, 0x79, 0x70, 0x65, 0x52, 0x0b,
+	0x73, 0x6f, 0x63, 0x69, 0x61, 0x6c, 0x4d, 0x65, 0x64, 0x69, 0x61, 0x22, 0x19, 0x0a, 0x05, 0x49,
+	0x6d, 0x61, 0x67, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x22, 0x33, 0x0a, 0x0b, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c,
+	0x4d, 0x65, 0x64, 0x69, 0x61, 0x12, 0x12, 0x0a, 0x04, 0x74, 0x79, 0x70, 0x65, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x04, 0x74, 0x79, 0x70, 0x65, 0x12, 0x10, 0x0a, 0x03, 0x75, 0x72, 0x6c,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x22, 0xa1, 0x01, 0x0a, 0x13,
+	0x4c, 0x69, 0x73, 0x74, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x1b, 0x0a, 0x09, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x73, 0x69, 0x7a, 0x65,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52, 0x08, 0x70, 0x61, 0x67, 0x65, 0x53, 0x69, 0x7a, 0x65,
+	0x12, 0x1d, 0x0a, 0x0a, 0x70, 0x61, 0x67, 0x65, 0x5f, 0x69, 0x6e, 0x64, 0x65, 0x78, 0x18, 0x02,
+	0x20, 0x01, 0x28, 0x05, 0x52, 0x09, 0x70, 0x61, 0x67, 0x65, 0x49, 0x6e, 0x64, 0x65, 0x78, 0x12,
+	0x25, 0x0a, 0x0e, 0x66, 0x65, 0x65, 0x64, 0x5f, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72,
+	0x73, 0x18, 0x03, 0x20, 0x03, 0x28, 0x09, 0x52, 0x0d, 0x66, 0x65, 0x65, 0x64, 0x50, 0x72, 0x6f,
+	0x76, 0x69, 0x64, 0x65, 0x72, 0x73, 0x12, 0x27, 0x0a, 0x0f, 0x66, 0x65, 0x65, 0x64, 0x5f, 0x63,
+	0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x18, 0x04, 0x20, 0x03, 0x28, 0x09, 0x52,
+	0x0e, 0x66, 0x65, 0x65, 0x64, 0x43, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x69, 0x65, 0x73, 0x22,
+	0x41, 0x0a, 0x14, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x29, 0x0a, 0x08, 0x61, 0x72, 0x74, 0x69, 0x63,
+	0x6c, 0x65, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0d, 0x2e, 0x6e, 0x65, 0x77, 0x73,
+	0x2e, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x52, 0x08, 0x61, 0x72, 0x74, 0x69, 0x63, 0x6c,
+	0x65, 0x73, 0x22, 0x5a, 0x0a, 0x0e, 0x41, 0x64, 0x64, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72,
+	0x12, 0x1a, 0x0a, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x08, 0x63, 0x61, 0x74, 0x65, 0x67, 0x6f, 0x72, 0x79, 0x12, 0x10, 0x0a, 0x03,
+	0x75, 0x72, 0x6c, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x03, 0x75, 0x72, 0x6c, 0x22, 0x31,
+	0x0a, 0x0f, 0x41, 0x64, 0x64, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
+	0x65, 0x12, 0x1e, 0x0a, 0x04, 0x66, 0x65, 0x65, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32,
+	0x0a, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x46, 0x65, 0x65, 0x64, 0x52, 0x04, 0x66, 0x65, 0x65,
+	0x64, 0x22, 0x12, 0x0a, 0x10, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x64, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x35, 0x0a, 0x11, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65,
+	0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x20, 0x0a, 0x05, 0x66, 0x65,
+	0x65, 0x64, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0a, 0x2e, 0x6e, 0x65, 0x77, 0x73,
+	0x2e, 0x46, 0x65, 0x65, 0x64, 0x52, 0x05, 0x66, 0x65, 0x65, 0x64, 0x73, 0x22, 0x2c, 0x0a, 0x11,
+	0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x17, 0x0a, 0x07, 0x66, 0x65, 0x65, 0x64, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x06, 0x66, 0x65, 0x65, 0x64, 0x49, 0x64, 0x22, 0x14, 0x0a, 0x12, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x22, 0x41, 0x0a, 0x0f, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x72,
+	0x72, 0x6f, 0x72, 0x12, 0x14, 0x0a, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x18, 0x01, 0x20, 0x01,
+	0x28, 0x09, 0x52, 0x05, 0x66, 0x69, 0x65, 0x6c, 0x64, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73,
+	0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73,
+	0x61, 0x67, 0x65, 0x22, 0x41, 0x0a, 0x10, 0x56, 0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x73, 0x12, 0x2d, 0x0a, 0x06, 0x65, 0x72, 0x72, 0x6f, 0x72,
+	0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x15, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x56,
+	0x61, 0x6c, 0x69, 0x64, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x45, 0x72, 0x72, 0x6f, 0x72, 0x52, 0x06,
+	0x65, 0x72, 0x72, 0x6f, 0x72, 0x73, 0x2a, 0x6f, 0x0a, 0x0f, 0x53, 0x6f, 0x63, 0x69, 0x61, 0x6c,
+	0x4d, 0x65, 0x64, 0x69, 0x61, 0x54, 0x79, 0x70, 0x65, 0x12, 0x1d, 0x0a, 0x19, 0x53, 0x4f, 0x43,
+	0x49, 0x41, 0x4c, 0x5f, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x55,
+	0x4e, 0x4b, 0x4e, 0x4f, 0x57, 0x4e, 0x10, 0x00, 0x12, 0x1e, 0x0a, 0x1a, 0x53, 0x4f, 0x43, 0x49,
+	0x41, 0x4c, 0x5f, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x46, 0x41,
+	0x43, 0x45, 0x42, 0x4f, 0x4f, 0x4b, 0x10, 0x01, 0x12, 0x1d, 0x0a, 0x19, 0x53, 0x4f, 0x43, 0x49,
+	0x41, 0x4c, 0x5f, 0x4d, 0x45, 0x44, 0x49, 0x41, 0x5f, 0x54, 0x59, 0x50, 0x45, 0x5f, 0x54, 0x57,
+	0x49, 0x54, 0x54, 0x45, 0x52, 0x10, 0x02, 0x32, 0x84, 0x02, 0x0a, 0x04, 0x4e, 0x65, 0x77, 0x73,
+	0x12, 0x45, 0x0a, 0x0c, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x73,
+	0x12, 0x19, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x72, 0x74, 0x69,
+	0x63, 0x6c, 0x65, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1a, 0x2e, 0x6e, 0x65,
+	0x77, 0x73, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x72, 0x74, 0x69, 0x63, 0x6c, 0x65, 0x73, 0x52,
+	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x36, 0x0a, 0x07, 0x41, 0x64, 0x64, 0x46, 0x65,
+	0x65, 0x64, 0x12, 0x14, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x41, 0x64, 0x64, 0x46, 0x65, 0x65,
+	0x64, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e,
+	0x41, 0x64, 0x64, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x3f, 0x0a, 0x0a, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x65, 0x65, 0x64, 0x12, 0x17, 0x2e,
+	0x6e, 0x65, 0x77, 0x73, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x46, 0x65, 0x65, 0x64, 0x52,
+	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x18, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x44, 0x65,
+	0x6c, 0x65, 0x74, 0x65, 0x46, 0x65, 0x65, 0x64, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65,
+	0x12, 0x3c, 0x0a, 0x09, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x64, 0x73, 0x12, 0x16, 0x2e,
+	0x6e, 0x65, 0x77, 0x73, 0x2e, 0x4c, 0x69, 0x73, 0x74, 0x46, 0x65, 0x65, 0x64, 0x73, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x17, 0x2e, 0x6e, 0x65, 0x77, 0x73, 0x2e, 0x4c, 0x69, 0x73,
+	0x74, 0x46, 0x65, 0x65, 0x64, 0x73, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x42, 0x20,
+	0x5a, 0x1e, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x6c, 0x75,
+	0x65, 0x6c, 0x69, 0x6e, 0x65, 0x63, 0x6f, 0x64, 0x69, 0x6e, 0x67, 0x2f, 0x6e, 0x65, 0x77, 0x73,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -151,19 +974,48 @@ func file_news_proto_rawDescGZIP() []byte {
 	return file_news_proto_rawDescData
 }
 
-var file_news_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_news_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_news_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_news_proto_goTypes = []interface{}{
-	(*GetRequest)(nil),  // 0: news.GetRequest
-	(*GetResponse)(nil), // 1: news.GetResponse
+	(SocialMediaType)(0),         // 0: news.SocialMediaType
+	(*Feed)(nil),                 // 1: news.Feed
+	(*Article)(nil),              // 2: news.Article
+	(*Image)(nil),                // 3: news.Image
+	(*SocialMedia)(nil),          // 4: news.SocialMedia
+	(*ListArticlesRequest)(nil),  // 5: news.ListArticlesRequest
+	(*ListArticlesResponse)(nil), // 6: news.ListArticlesResponse
+	(*AddFeedRequest)(nil),       // 7: news.AddFeedRequest
+	(*AddFeedResponse)(nil),      // 8: news.AddFeedResponse
+	(*ListFeedsRequest)(nil),     // 9: news.ListFeedsRequest
+	(*ListFeedsResponse)(nil),    // 10: news.ListFeedsResponse
+	(*DeleteFeedRequest)(nil),    // 11: news.DeleteFeedRequest
+	(*DeleteFeedResponse)(nil),   // 12: news.DeleteFeedResponse
+	(*ValidationError)(nil),      // 13: news.ValidationError
+	(*ValidationErrors)(nil),     // 14: news.ValidationErrors
+	(*timestamp.Timestamp)(nil),  // 15: google.protobuf.Timestamp
 }
 var file_news_proto_depIdxs = []int32{
-	0, // 0: news.News.Get:input_type -> news.GetRequest
-	1, // 1: news.News.Get:output_type -> news.GetResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	15, // 0: news.Feed.create_time:type_name -> google.protobuf.Timestamp
+	3,  // 1: news.Article.image:type_name -> news.Image
+	15, // 2: news.Article.published_time:type_name -> google.protobuf.Timestamp
+	0,  // 3: news.Article.social_media:type_name -> news.SocialMediaType
+	2,  // 4: news.ListArticlesResponse.articles:type_name -> news.Article
+	1,  // 5: news.AddFeedResponse.feed:type_name -> news.Feed
+	1,  // 6: news.ListFeedsResponse.feeds:type_name -> news.Feed
+	13, // 7: news.ValidationErrors.errors:type_name -> news.ValidationError
+	5,  // 8: news.News.ListArticles:input_type -> news.ListArticlesRequest
+	7,  // 9: news.News.AddFeed:input_type -> news.AddFeedRequest
+	11, // 10: news.News.DeleteFeed:input_type -> news.DeleteFeedRequest
+	9,  // 11: news.News.ListFeeds:input_type -> news.ListFeedsRequest
+	6,  // 12: news.News.ListArticles:output_type -> news.ListArticlesResponse
+	8,  // 13: news.News.AddFeed:output_type -> news.AddFeedResponse
+	12, // 14: news.News.DeleteFeed:output_type -> news.DeleteFeedResponse
+	10, // 15: news.News.ListFeeds:output_type -> news.ListFeedsResponse
+	12, // [12:16] is the sub-list for method output_type
+	8,  // [8:12] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_news_proto_init() }
@@ -173,7 +1025,7 @@ func file_news_proto_init() {
 	}
 	if !protoimpl.UnsafeEnabled {
 		file_news_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetRequest); i {
+			switch v := v.(*Feed); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -185,7 +1037,151 @@ func file_news_proto_init() {
 			}
 		}
 		file_news_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*GetResponse); i {
+			switch v := v.(*Article); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*Image); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SocialMedia); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListArticlesRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListArticlesResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddFeedRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*AddFeedResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListFeedsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListFeedsResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFeedRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*DeleteFeedResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ValidationError); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_news_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ValidationErrors); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -202,13 +1198,14 @@ func file_news_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_news_proto_rawDesc,
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_news_proto_goTypes,
 		DependencyIndexes: file_news_proto_depIdxs,
+		EnumInfos:         file_news_proto_enumTypes,
 		MessageInfos:      file_news_proto_msgTypes,
 	}.Build()
 	File_news_proto = out.File
@@ -229,7 +1226,14 @@ const _ = grpc.SupportPackageIsVersion6
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type NewsClient interface {
-	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	// List articles from 1 or more news feeds
+	ListArticles(ctx context.Context, in *ListArticlesRequest, opts ...grpc.CallOption) (*ListArticlesResponse, error)
+	// Add a feed to the API
+	AddFeed(ctx context.Context, in *AddFeedRequest, opts ...grpc.CallOption) (*AddFeedResponse, error)
+	// Delete a feed from the API
+	DeleteFeed(ctx context.Context, in *DeleteFeedRequest, opts ...grpc.CallOption) (*DeleteFeedResponse, error)
+	// List all the feeds
+	ListFeeds(ctx context.Context, in *ListFeedsRequest, opts ...grpc.CallOption) (*ListFeedsResponse, error)
 }
 
 type newsClient struct {
@@ -240,9 +1244,36 @@ func NewNewsClient(cc grpc.ClientConnInterface) NewsClient {
 	return &newsClient{cc}
 }
 
-func (c *newsClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
-	out := new(GetResponse)
-	err := c.cc.Invoke(ctx, "/news.News/Get", in, out, opts...)
+func (c *newsClient) ListArticles(ctx context.Context, in *ListArticlesRequest, opts ...grpc.CallOption) (*ListArticlesResponse, error) {
+	out := new(ListArticlesResponse)
+	err := c.cc.Invoke(ctx, "/news.News/ListArticles", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *newsClient) AddFeed(ctx context.Context, in *AddFeedRequest, opts ...grpc.CallOption) (*AddFeedResponse, error) {
+	out := new(AddFeedResponse)
+	err := c.cc.Invoke(ctx, "/news.News/AddFeed", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *newsClient) DeleteFeed(ctx context.Context, in *DeleteFeedRequest, opts ...grpc.CallOption) (*DeleteFeedResponse, error) {
+	out := new(DeleteFeedResponse)
+	err := c.cc.Invoke(ctx, "/news.News/DeleteFeed", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *newsClient) ListFeeds(ctx context.Context, in *ListFeedsRequest, opts ...grpc.CallOption) (*ListFeedsResponse, error) {
+	out := new(ListFeedsResponse)
+	err := c.cc.Invoke(ctx, "/news.News/ListFeeds", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -251,35 +1282,105 @@ func (c *newsClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallO
 
 // NewsServer is the server API for News service.
 type NewsServer interface {
-	Get(context.Context, *GetRequest) (*GetResponse, error)
+	// List articles from 1 or more news feeds
+	ListArticles(context.Context, *ListArticlesRequest) (*ListArticlesResponse, error)
+	// Add a feed to the API
+	AddFeed(context.Context, *AddFeedRequest) (*AddFeedResponse, error)
+	// Delete a feed from the API
+	DeleteFeed(context.Context, *DeleteFeedRequest) (*DeleteFeedResponse, error)
+	// List all the feeds
+	ListFeeds(context.Context, *ListFeedsRequest) (*ListFeedsResponse, error)
 }
 
 // UnimplementedNewsServer can be embedded to have forward compatible implementations.
 type UnimplementedNewsServer struct {
 }
 
-func (*UnimplementedNewsServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
+func (*UnimplementedNewsServer) ListArticles(context.Context, *ListArticlesRequest) (*ListArticlesResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListArticles not implemented")
+}
+func (*UnimplementedNewsServer) AddFeed(context.Context, *AddFeedRequest) (*AddFeedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddFeed not implemented")
+}
+func (*UnimplementedNewsServer) DeleteFeed(context.Context, *DeleteFeedRequest) (*DeleteFeedResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteFeed not implemented")
+}
+func (*UnimplementedNewsServer) ListFeeds(context.Context, *ListFeedsRequest) (*ListFeedsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListFeeds not implemented")
 }
 
 func RegisterNewsServer(s *grpc.Server, srv NewsServer) {
 	s.RegisterService(&_News_serviceDesc, srv)
 }
 
-func _News_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetRequest)
+func _News_ListArticles_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListArticlesRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(NewsServer).Get(ctx, in)
+		return srv.(NewsServer).ListArticles(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/news.News/Get",
+		FullMethod: "/news.News/ListArticles",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(NewsServer).Get(ctx, req.(*GetRequest))
+		return srv.(NewsServer).ListArticles(ctx, req.(*ListArticlesRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _News_AddFeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddFeedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NewsServer).AddFeed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/news.News/AddFeed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NewsServer).AddFeed(ctx, req.(*AddFeedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _News_DeleteFeed_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteFeedRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NewsServer).DeleteFeed(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/news.News/DeleteFeed",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NewsServer).DeleteFeed(ctx, req.(*DeleteFeedRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _News_ListFeeds_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListFeedsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(NewsServer).ListFeeds(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/news.News/ListFeeds",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(NewsServer).ListFeeds(ctx, req.(*ListFeedsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -289,8 +1390,20 @@ var _News_serviceDesc = grpc.ServiceDesc{
 	HandlerType: (*NewsServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "Get",
-			Handler:    _News_Get_Handler,
+			MethodName: "ListArticles",
+			Handler:    _News_ListArticles_Handler,
+		},
+		{
+			MethodName: "AddFeed",
+			Handler:    _News_AddFeed_Handler,
+		},
+		{
+			MethodName: "DeleteFeed",
+			Handler:    _News_DeleteFeed_Handler,
+		},
+		{
+			MethodName: "ListFeeds",
+			Handler:    _News_ListFeeds_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

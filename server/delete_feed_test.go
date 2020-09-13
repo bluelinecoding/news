@@ -8,11 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGet(t *testing.T) {
+func TestDeleteFeed(t *testing.T) {
 	ctx := context.Background()
-	req := &news.GetRequest{}
+	req := &news.DeleteFeedRequest{}
 
-	res, err := cli.Get(ctx, req)
+	res, err := cli.DeleteFeed(ctx, req)
 	assert.Nil(t, err)
 	assert.NotNil(t, res)
 }

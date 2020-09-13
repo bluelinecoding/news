@@ -7,6 +7,6 @@ import (
 	"github.com/bluelinecoding/news"
 )
 
-func (s NewsServer) Get(ctx context.Context, r *news.GetRequest) (*news.GetResponse, error) {
+func (s NewsServer) ListFeeds(ctx context.Context, r *news.ListFeedsRequest) (*news.ListFeedsResponse, error) {
 	return nil, errors.New("not yet implemented")
 }
